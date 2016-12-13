@@ -39,7 +39,7 @@ ScoreKeeper = require('./scorekeeper')
 module.exports = (robot) ->
   scoreKeeper = new ScoreKeeper(robot)
   scoreKeyword   = process.env.HUBOT_PLUSPLUS_KEYWORD or 'score'
-  reasonsKeyword = process.env.HUBOT_PLUSPLUS_REASONS or 'raisins'
+  reasonsKeyword = process.env.HUBOT_PLUSPLUS_REASONS or 'tasks completed'
   reasonConjunctions = process.env.HUBOT_PLUSPLUS_CONJUNCTIONS or 'for|because|cause|cuz|as'
 
   # sweet regex bro
@@ -64,49 +64,53 @@ module.exports = (robot) ->
     # do some sanitizing
     reason = reason?.trim().toLowerCase()
 
-    if name
-      if name.charAt(0) == ':'
-        name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
-      else
-        name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
+    if msg.message.user.name.toLowerCase() == "tony_stark"
 
-    # check whether a name was specified. use MRU if not
-    unless name? && name != ''
-      [name, lastReason] = scoreKeeper.last(room)
-      reason = lastReason if !reason? && lastReason?
 
-    # do the {up, down}vote, and figure out what the new score is
-    [score, reasonScore] = if operator == "++"
-              scoreKeeper.add(name, from, room, reason)
-            else
-              scoreKeeper.subtract(name, from, room, reason)
-
-    # if we got a score, then display all the things and fire off events!
-    if score?
-      message = if reason?
-                  if reasonScore == 1 or reasonScore == -1
-                    if score == 1 or score == -1
-                      "#{name} has #{score} point for #{reason}."
+      if name
+        if name.charAt(0) == ':'
+          name = (name.replace /(^\s*@)|([,\s]*$)/g, '').trim().toLowerCase()
+        else
+          name = (name.replace /(^\s*@)|([,:\s]*$)/g, '').trim().toLowerCase()
+  
+      # check whether a name was specified. use MRU if not
+      unless name? && name != ''
+        [name, lastReason] = scoreKeeper.last(room)
+        reason = lastReason if !reason? && lastReason?
+  
+      # do the {up, down}vote, and figure out what the new score is
+      [score, reasonScore] = if operator == "++"
+                scoreKeeper.add(name, from, room, reason)
+              else
+                scoreKeeper.subtract(name, from, room, reason)
+  
+      # if we got a score, then display all the things and fire off events!
+      if score?
+        message = if reason?
+                    if reasonScore == 1 or reasonScore == -1
+                      if score == 1 or score == -1
+                        "#{name} has #{score} point for #{reason}."
+                      else
+                        "#{name} has #{score} points, #{reasonScore} of which is for #{reason}."
                     else
-                      "#{name} has #{score} points, #{reasonScore} of which is for #{reason}."
+                      "#{name} has #{score} points, #{reasonScore} of which are for #{reason}."
                   else
-                    "#{name} has #{score} points, #{reasonScore} of which are for #{reason}."
-                else
-                  if score == 1
-                    "#{name} has #{score} point"
-                  else
-                    "#{name} has #{score} points"
+                    if score == 1
+                      "#{name} has #{score} point"
+                    else
+                      "#{name} has #{score} points"
 
+        msg.send message
 
-      msg.send message
-
-      robot.emit "plus-one", {
-        name:      name
-        direction: operator
-        room:      room
-        reason:    reason
-        from:      from
-      }
+        robot.emit "plus-one", {
+          name:      name
+          direction: operator
+          room:      room
+          reason:    reason
+          from:      from
+        }
+    else
+      msg.send "Sorry " + msg.message.user.name.toLowerCase() + " you are not authorized to perform that command."
 
   robot.respond ///
     (?:erase )
