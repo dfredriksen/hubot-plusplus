@@ -11,10 +11,16 @@ API
 
 * `thing++` - add a point to `thing`
 * `++` - add a point to the most previously voted-on thing
+* `thing+++` - add half point to `thing`
+* `+++` - add half point to the most previously voted-on thing
 * `thing++ for stuff` - keep track of why you gave thing points
+* `thing+++ for stuff` - keep track of why you gave thing half point
 * `thing--` - remove a point from `thing`
 * `--` - remove a point from the most previously voted-on thing
+* `thing+--` - remove a half point from `thing`
+* `+--` - remove a half point from the most previously voted-on thing
 * `thing-- for stuff` - keep track of why you removed thing points
+* `thing+-- for stuff` - keep track of why you removed thing half point
 * `hubot erase thing` - erase thing from scoreboard (permanently deletes thing from memory)
 * `hubot erase thing for reason` erase given reason from thing's score board (does not deduct from total score)
 * `hubot top 10` - show the top 10, with a graph of points
