@@ -51,7 +51,7 @@ module.exports = (robot) ->
     # allow for spaces after the thing being upvoted (@user ++)
     \s*
     # the increment/decrement operator ++ or --
-    (\+\+|--|\+\+\+|—)
+    (\+\+|--|\+\+\+|---|—)
     # optional reason for the plusplus
     (?:\s+(?:#{reasonConjunctions})\s+(.+))?
     $ # end of line
@@ -83,6 +83,8 @@ module.exports = (robot) ->
                 scoreKeeper.add(name, from, room, reason)
               else if operator == "+++"
                 scoreKeeper.addHalf(name, from, room, reason)
+              else if operator == "---"
+                scoreKeeper.subtractHalf(name, from, room, reason)
               else
                 scoreKeeper.subtract(name, from, room, reason)
   

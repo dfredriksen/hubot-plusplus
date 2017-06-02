@@ -79,6 +79,21 @@ class ScoreKeeper
     else
       [null, null]
 
+  subtractHalf: (user, from, room, reason) ->
+    if @validate(user, from)
+      user = @getUser(user)
+      @storage.scores[user]-=0.5
+      @storage.reasons[user] ||= {}
+
+      if reason
+        @storage.reasons[user][reason] ||= 0
+        @storage.reasons[user][reason]-=0.5
+
+      @saveUser(user, from, room, reason)
+    else
+      [null, null]
+
+
   erase: (user, from, room, reason) ->
     user = @getUser(user)
 
