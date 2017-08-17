@@ -64,7 +64,7 @@ module.exports = (robot) ->
     # do some sanitizing
     reason = reason?.trim().toLowerCase()
 
-    if msg.message.user.name.toLowerCase() == "tony_stark"
+    if msg.message.user.name.toLowerCase() == "daniel_fredriksen"
 
 
       if name
